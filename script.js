@@ -10,30 +10,66 @@ document.addEventListener('DOMContentLoaded', function(event) {
     });
 });
 
-function add(...num){
-    let rVal
+function add(num){
+    num = num.split(" ")
+    let rVal = 0;
     num.forEach(n => {
-        rVal += Number(n)
-    });
+        rVal += Number(n);
+    })
     return rVal
 
 }
 
 function sub(num){
-    return num
-
+    num = num.split(" ")
+    let rVal = 0;
+    num.forEach(n => {
+        if(rVal === 0){
+            rVal = Number(n);
+        } else {
+            rVal -= Number(n);
+        }
+    })
+    return rVal
 }
 
 function mul(num){
-    return num
+    num = num.split(" ")
+    let rVal = 0;
+    num.forEach(n => {
+        if(rVal === 0){
+            rVal = Number(n);
+        } else {
+            rVal *= Number(n);
+        }
+    })
+    return rVal
 }
 
 function div(num){
-    return num
+    num = num.split(" ")
+    let rVal = 0;
+    num.forEach(n => {
+        if(rVal === 0){
+            rVal = Number(n);
+        } else {
+            rVal /= Number(n);
+        }
+    })
+    return rVal
 }
 
 function exp(num){
-    return num + num
+    num = num.split(" ")
+    let rVal = 0;
+    num.forEach(n => {
+        if(rVal === 0){
+            rVal = Number(n);
+        } else {
+            rVal **= n
+        }
+    })
+    return rVal
 
 }
 
@@ -48,7 +84,7 @@ function operation(num){
             if(char == ")"){
                 return "notyet"
             }
-            if(char == "e"){
+            if(char == "^"){
                 let expTemp =""
 
                 if(temp == ""){
@@ -57,6 +93,7 @@ function operation(num){
                     expTemp += temp
                 }
 
+                expTemp += " "
                 expTemp += num[index + 1]
                 temp = exp(expTemp)
             }
@@ -68,6 +105,8 @@ function operation(num){
                 } else {
                     mulTemp += temp;
                 }
+
+                mulTemp += " "
                 mulTemp += num[index + 1];
                 temp = mul(mulTemp);
             }
@@ -79,6 +118,7 @@ function operation(num){
                 } else {
                     divTemp += temp;
                 }
+                divTemp += " "
                 divTemp += num[index + 1]
                 temp = div(divTemp)
             }
@@ -90,22 +130,24 @@ function operation(num){
                 } else{
                     addTemp += temp;
                 }
-
+                addTemp += " "
                 addTemp += num[index + 1]
                 temp = add(addTemp)
             }
             if(char == "-"){
                 let subTemp=""
 
-                if(temp == ""){
+                if(temp === ""){
                     subTemp += num[index - 1]
                 } else {
                     subTemp += temp
                 }
-
+                subTemp += " "
                 subTemp += num[index + 1]
                 temp = sub(subTemp)
             }
+            //alert(temp)
+            //alert(typeof(temp))
         }
     });
     return temp;
