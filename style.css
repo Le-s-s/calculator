@@ -1,3 +1,17 @@
 body,html{
     height: 100%;
 }
+
+.display{
+    display: flex;
+    flex-direction: row;
+}
+.container{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+button{
+    width: 150px;
+    height: 150px;
+}
