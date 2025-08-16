@@ -1,14 +1,20 @@
 body,html{
     height: 100%;
+    margin:0
+}
+
+.display,.container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 .display{
-    display: flex;
     flex-direction: row;
 }
+
 .container{
-    display: flex;
-    flex-wrap: wrap;
+    width: 450px;
 }
 
 button{

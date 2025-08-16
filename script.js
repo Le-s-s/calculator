@@ -38,14 +38,13 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
         button.addEventListener('click', () => {
 
-            currentMath.textContent += ` ${button.value} `;
+            currentMath.textContent += `${button.value}`;
         });
     });
 });
 
 // basic addition loop
-function add(num){
-    num = num.split(" ")
+function add(...num){
     let rVal = 0;
     // iterats over array adding to it.
     num.forEach(n => {
@@ -56,8 +55,7 @@ function add(num){
 }
 
 // the functions mostly all work the same from here
-function sub(num){
-    num = num.split(" ")
+function sub(...num){
     let rVal = 0;
     num.forEach(n => {
         if(rVal === 0){
@@ -69,8 +67,7 @@ function sub(num){
     return rVal
 }
 
-function mul(num){
-    num = num.split(" ")
+function mul(...num){
     let rVal = 0;
     num.forEach(n => {
         if(rVal === 0){
@@ -82,8 +79,7 @@ function mul(num){
     return rVal
 }
 
-function div(num){
-    num = num.split(" ")
+function div(...num){
     let rVal = 0;
     num.forEach(n => {
         if(rVal === 0){
@@ -95,8 +91,7 @@ function div(num){
     return rVal
 }
 
-function exp(num){
-    num = num.split(" ")
+function exp(...num){
     let rVal = 0;
     num.forEach(n => {
         if(rVal === 0){
@@ -109,160 +104,100 @@ function exp(num){
 
 }
 
-// i will admit this was written by and ai
-// and will stay written by an ai until i have more time.
-function par(num) {
-    // loops until all para's are gone
-    while (num.includes("(")) {
-        // find location of first (
+// this part is still written by ai, will change later
+function par(numArr) {
+    while (numArr.includes("(")) {
         let openIndex = -1;
-        //iterate over the entire array of strings
-        for (let i = 0; i < num.length; i++) {
-            // sets first para as var
-            if (num[i] === "(") openIndex = i;
-            // sets end para as sepearte var
-            if (num[i] === ")") {
+
+        for (let i = 0; i < numArr.length; i++) {
+            if (numArr[i] === "(") openIndex = i;
+
+            if (numArr[i] === ")") {
                 let closeIndex = i;
 
-                // creates var using the content of the by using previous vars
-                let inside = num.slice(openIndex + 1, closeIndex);
+                // get tokens inside parentheses
+                let inside = numArr.slice(openIndex + 1, closeIndex);
 
-                // sends joined result of previous through operation logic
-                let result = operation(inside.join(" "));
+                // compute the value
+                let result = operation(inside.join("")); // join into string for tokenization
 
-                // overwrites the paras and inserts results
-                num.splice(openIndex, closeIndex - openIndex + 1, String(result));
+                // replace "( ... )" with result
+                numArr.splice(openIndex, closeIndex - openIndex + 1, String(result));
 
-                // keeps looking for other paras
-                break;
+                break; // restart loop in case of nested parentheses
             }
         }
     }
-    return num;
+
+    return numArr;
 }
 
-// over complicated operand function/nightmare
+
 function operation(num){
-    // split string into array on space
-    num = num.split(" ")
+    let numArr = []
+    let numStr = ""
+    // iterate over length of inputed string
+    for(let i = 0; i <= num.length; i++){
+        // creates var = to currently iterated member of inputed string
+        let char = num[i]
+        // create duplicate variable but as a number
+        let n = Number(char);
+        // checks if var is number or decimal
+        // and adds it to temp string
+        if(!isNaN(n) || char === "."){
+            numStr += char
+        // otherwise if the char is not an empty space or undefined
+        // and if the temp string is not empty
+        // push string into array
+        } else if(char !== " " && char !== undefined){
+            if (numStr !== ""){
+                numArr.push(numStr);
+                numStr = "";
+            }
+            // if a symbol it will push into the array
+            numArr.push(char);
+        }
+    }
+    // if tmep string is not empty push temp string into it
+    if(numStr !== "") numArr.push(numStr);
+
     // run array through par function
-    num = par(num);
-    // creates temp string for shenanigans
-    let temp = ""
-    // iterate through each member of array
-    num.forEach((char, index, num) => {
-        // all operands basically perform the same
-        // i tried to impliment pemdas through oop
-        // likely failed
-            if(char == "^"){
-                // creates temp string
-                let expTemp =""
+    numArr = par(numArr);
 
-                // if temp string is empty
-                if(temp == ""){
-                    // insert previous number in array into opTemp
-                    expTemp += num[index - 1]
-                } else {
-                    // if not then add temp
-                    expTemp += temp
-                }
+    // creates list of symbols for math
+    const op = ["^","*","/","+","-"]
 
-                // insert space into opTemp
-                expTemp += " "
-                // add next number to opTemp
-                expTemp += num[index + 1]
-                // run the string example(11 12) through the math functions
-                temp = exp(expTemp)
+    // iterates over the length of operator array
+    for(let l = 0; l < op.length; l++){
+        // iterates over created number array * the amount of operators
+        for(let i = 0; i < numArr.length; i++){
+            // checks if array symbol is equal to operator    
+            if(numArr[i] === op[l]){
+                // sets two variable equal to previous and next char
+                let num1 = numArr[i - 1]
+                let num2 = numArr[i + 1]
+                // empy variable for storage
+                let opTemp
+
+                // if symbol then math
+                if(op[l] === "^") opTemp = exp(num1, num2)
+                if(op[l] === "*") opTemp = mul(num1, num2)
+                if(op[l] === "/") opTemp = div(num1, num2)
+                if(op[l] === "+") opTemp = add(num1, num2)
+                if(op[l] === "-") opTemp = sub(num1, num2)
+                
+                // this part was written by and ai.
+                // it splices the array and inserts the result into numArr[0]
+                // replacing num 1 operator and num2
+                // allowing it to continue being proccesses
+                // then steps back an iteration allowing it to continue
+                numArr.splice(i - 1, 3, opTemp);
+                i--;
             }
-            if(char == "*"){
-                let mulTemp =""
-
-                if(temp == ""){
-                    mulTemp += num[index - 1];
-                } else {
-                    mulTemp += temp;
-                }
-
-                mulTemp += " "
-                mulTemp += num[index + 1];
-                temp = mul(mulTemp);
-            }
-            if(char == "/"){
-                let divTemp =""
-
-                if(temp == ""){
-                    divTemp += num[index - 1]
-                } else {
-                    divTemp += temp;
-                }
-                divTemp += " "
-                divTemp += num[index + 1]
-                temp = div(divTemp)
-            }
-            if(char == "+"){
-                let addTemp=""
-
-                if(temp == ""){
-                    addTemp += num[index - 1]
-                } else{
-                    addTemp += temp;
-                }
-                addTemp += " "
-                addTemp += num[index + 1]
-                temp = add(addTemp)
-            }
-            if(char == "-"){
-                let subTemp=""
-
-                if(temp === ""){
-                    subTemp += num[index - 1]
-                } else {
-                    subTemp += temp
-                }
-                subTemp += " "
-                subTemp += num[index + 1]
-                temp = sub(subTemp)
-            }
-    });
-    // return answer
-    return temp;
+        }
+    }
+    return numArr[0];
 }
-
-// ai made better version
-//function operation(input) {
-//    let tokens = input.split(" ").filter(t => t.length > 0);
-//    tokens = par(tokens);  // resolve parentheses first
-
-//    const precedence = [
-//        ["^"],
-//        ["*", "/"],
-//        ["+", "-"]
-//    ];
-
-//    for (let ops of precedence) {
-//        let i = 0;
-//        while (i < tokens.length) {
-//            if (ops.includes(tokens[i])) {
-//                const a = Number(tokens[i - 1]);
-//                const b = Number(tokens[i + 1]);
-//               let result;
-//                switch(tokens[i]) {
-//                    case "^": result = a ** b; break;
-//                    case "*": result = a * b; break;
-//                    case "/": result = a / b; break;
-//                    case "+": result = a + b; break;
-//                    case "-": result = a - b; break;
-//                }
-//                tokens.splice(i - 1, 3, result.toString());
-//                i = 0; // start over after splice
-//            } else {
-//                i++;
-//            }
-//        }
-//    }
-
-//    return tokens[0];
-//}
 
 
 //UI
