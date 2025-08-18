@@ -87,6 +87,7 @@ function exp(...num){
 }
 
 // this part is still written by ai, will change later
+// not sure how to make this mine, so i wont until i'm better.
 function par(numArr) {
     while (numArr.includes("(")) {
         let openIndex = -1;
@@ -125,22 +126,27 @@ function operation(num){
         // create duplicate variable but as a number
         let n = Number(char);
         // checks if var is number or decimal
-        // and adds it to temp string
+        // adds to temp string
         if(!isNaN(n) || char === "."){
-            numStr += char
-        // otherwise if the char is not an empty space or undefined
-        // and if the temp string is not empty
-        // push string into array
+            // checks if there's already a decimal and removes additional
+            if(char === "."){
+                if(!numStr.includes(".")){
+                    numStr += char
+                }
+                numStr += ""
+            } else {
+                numStr += char
+            }
+        // if a symbol and not a space/undefined, push into the array
         } else if(char !== " " && char !== undefined){
             if (numStr !== ""){
                 numArr.push(numStr);
                 numStr = "";
             }
-            // if a symbol it will push into the array
             numArr.push(char);
         }
     }
-    // if tmep string is not empty push temp string into it
+    // if temp not empty push into array
     if(numStr !== "") numArr.push(numStr);
 
     // run array through par function
@@ -158,8 +164,13 @@ function operation(num){
                 // sets two variable equal to previous and next char
                 let num1 = numArr[i - 1]
                 let num2 = numArr[i + 1]
-                // empy variable for storage
+
+                // empty variable for storage
                 let opTemp
+
+                // error handling to avoid 0 division and whatnot.
+                const zOp = ["^","*","/"]
+                if(num1 === "0" && zOp.includes(op[l])) return "0";
 
                 // if symbol then math
                 if(op[l] === "^") opTemp = exp(num1, num2)
@@ -167,12 +178,14 @@ function operation(num){
                 if(op[l] === "/") opTemp = div(num1, num2)
                 if(op[l] === "+") opTemp = add(num1, num2)
                 if(op[l] === "-") opTemp = sub(num1, num2)
-                
-                // this part was written by and ai.
-                // it splices the array and inserts the result into numArr[0]
-                // replacing num 1 operator and num2
-                // allowing it to continue being proccesses
-                // then steps back an iteration allowing it to continue
+
+                // this last two lines of code were written by and ai, but to change it, i'd have to make it worse.
+                // it seems like the best possible method.
+                // will revist when i'm not bad.
+
+                // essentially clears numArr before inserting result,
+                // of operation into first slot of numArr allowing continuous iteration
+                // then resets back one iteration to continue.
                 numArr.splice(i - 1, 3, opTemp);
                 i--;
             }
