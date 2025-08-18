@@ -1,44 +1,26 @@
-document.addEventListener('DOMContentLoaded', function(event) {
-    // dom logic, not sure how many of these i actually need.
-    let display = document.querySelector(".display");
+document.addEventListener("DOMContentLoaded", function(event) {
     const buttons = document.querySelectorAll(".math-button")
-    const opButtons = document.querySelectorAll(".math-button-op")
-    const enter = document.querySelector(".math-submit")
-    const clear = document.querySelector(".math-clear")
+    let display = document.querySelector(".numbers")
 
-    // could probably just add this to html
-    let currentMath = document.createElement("h1");
-    display.appendChild(currentMath)
-    //
-
-    // when = button is clicked set the 
-    // result of the math function as content of specific element
-    enter.addEventListener("click", function (){
-        const text = currentMath.textContent;
-        let answer = operation(text);
-        currentMath.textContent = answer
-    });
-
-    // simple clear function
-    clear.addEventListener("click", function (){
-        currentMath.innerHTML =""
-    });
 
     // iterates over number buttons
     buttons.forEach(button => {
 
         // add listeners to button as it iterates over them
-        button.addEventListener('click', () => {
-
-            currentMath.textContent += `${button.value}`;
-        });
-    });
-
-    opButtons.forEach(button => {
-
-        button.addEventListener('click', () => {
-
-            currentMath.textContent += `${button.value}`;
+        button.addEventListener("click", () => {
+            if(button.value === "c"){
+                display.innerHTML =""
+            } 
+            else if(button.value === "="){
+                const text = display.textContent;
+                let answer = operation(text);
+                display.textContent = answer
+            } else if(button.value === "~"){
+                display.textContent = display.textContent.slice(0, length-1)
+            }
+            else{
+            display.textContent += `${button.value}`;
+            }
         });
     });
 });
