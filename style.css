@@ -3,35 +3,35 @@ body,html{
     margin:0
 }
 
-
-.display, .math-container,.math-left,.math-right{
+.display,.math-container{
+    border-style: double;
+    border-width: 2em;
+    border-color: black;
+}
+.display,.math-container,.math-left,.math-right{
     display: flex;
     flex-wrap: wrap;
 }
 
 .math-left,.math-right{
     max-height:28.125em;
+    max-width: 37.5em;
     flex-direction: column;
 }
 
 .display,.math-container{
     flex-direction: row;
+    justify-self:center;
+    justify-content: center;
 }
+
 
 .display{
-    justify-content: space-around;
-}
+    background-color: gray;
+    height: 5.4em;
+    width: 54.6875em;
+    max-width: 54.6875em;
 
-.math-container{
-    justify-self:center;
-
-}
-.math-left{
-    max-width: 37.5em;
-}
-
-.math-right{
-    max-width: 37.5em;
 }
 
 button{
