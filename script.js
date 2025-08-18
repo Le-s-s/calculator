@@ -8,22 +8,42 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         // add listeners to button as it iterates over them
         button.addEventListener("click", () => {
-            if(button.value === "c"){
-                display.innerHTML =""
-            } 
-            else if(button.value === "="){
+            if(button.value === "c") {
+                display.textContent ="";
+            } else if (button.value === "="){
                 const text = display.textContent;
                 let answer = operation(text);
-                display.textContent = answer
-            } else if(button.value === "~"){
-                display.textContent = display.textContent.slice(0, length-1)
-            }
-            else{
+                display.textContent = answer;
+            } else if (button.value === "~") {
+                display.textContent = display.textContent.slice(0, display.textContent.length - 1);
+            } else {
             display.textContent += `${button.value}`;
             }
         });
     });
+
+    const op = ["^", "*", "/", "+", "-", "(", ")"];
+
+    // essentially the same logic as before but for keyboard.
+    window.addEventListener("keydown", (event) => {
+    if (event.key.toLowerCase() === "c") {
+        display.textContent = "";
+    } else if (event.key === "Enter") {
+        const text = display.textContent;
+        let answer = operation(text);
+        display.textContent = answer;
+    } else if (event.key === "Backspace") {
+        display.textContent = display.textContent.slice(0, -1);
+    
+    //checks if not a number, or included in op array
+    } else if (!isNaN(event.key) || op.includes(event.key)) {
+        display.textContent += event.key;
+    } else if (event.key === ".") {
+        display.textContent += ".";
+    }
 });
+});
+
 
 // basic addition loop
 function add(...num){
@@ -32,7 +52,7 @@ function add(...num){
     num.forEach(n => {
         rVal += Number(n);
     })
-    return rVal
+    return rVal;
 
 }
 
@@ -46,7 +66,7 @@ function sub(...num){
             rVal -= Number(n);
         }
     })
-    return rVal
+    return rVal;
 }
 
 function mul(...num){
@@ -58,7 +78,7 @@ function mul(...num){
             rVal *= Number(n);
         }
     })
-    return rVal
+    return rVal;
 }
 
 function div(...num){
@@ -70,7 +90,7 @@ function div(...num){
             rVal /= Number(n);
         }
     })
-    return rVal
+    return rVal;
 }
 
 function exp(...num){
@@ -79,14 +99,14 @@ function exp(...num){
         if(rVal === 0){
             rVal = Number(n);
         } else {
-            rVal **= n
+            rVal **= Number(n);
         }
     })
-    return rVal
+    return rVal;
 
 }
 
-// this part is still written by ai, will change later
+// this part is still written by mostly by ai, will change later
 // not sure how to make this mine, so i wont until i'm better.
 function par(numArr) {
     while (numArr.includes("(")) {
@@ -117,29 +137,28 @@ function par(numArr) {
 
 
 function operation(num){
-    let numArr = []
-    let numStr = ""
+    let numArr = [];
+    let numStr = "";
     // iterate over length of inputed string
-    for(let i = 0; i <= num.length; i++){
+    for (let i = 0; i <= num.length; i++) {
         // creates var = to currently iterated member of inputed string
-        let char = num[i]
+        let char = num[i];
         // create duplicate variable but as a number
         let n = Number(char);
         // checks if var is number or decimal
         // adds to temp string
-        if(!isNaN(n) || char === "."){
+        if (!isNaN(n) || char === ".") {
             // checks if there's already a decimal and removes additional
-            if(char === "."){
-                if(!numStr.includes(".")){
-                    numStr += char
+            if (char === ".") {
+                if (!numStr.includes(".")) {
+                    numStr += char;
                 }
-                numStr += ""
             } else {
-                numStr += char
+                numStr += char;
             }
         // if a symbol and not a space/undefined, push into the array
-        } else if(char !== " " && char !== undefined){
-            if (numStr !== ""){
+        } else if (char !== " " && char !== undefined) {
+            if (numStr !== "") {
                 numArr.push(numStr);
                 numStr = "";
             }
@@ -147,37 +166,36 @@ function operation(num){
         }
     }
     // if temp not empty push into array
-    if(numStr !== "") numArr.push(numStr);
+    if (numStr !== "") numArr.push(numStr);
 
     // run array through par function
     numArr = par(numArr);
 
     // creates list of symbols for math
-    const op = ["^","*","/","+","-"]
+    const op = ["^","*","/","+","-"];
 
     // iterates over the length of operator array
-    for(let l = 0; l < op.length; l++){
+    for (let l = 0; l < op.length; l++) {
         // iterates over created number array * the amount of operators
-        for(let i = 0; i < numArr.length; i++){
+        for (let i = 0; i < numArr.length; i++) {
             // checks if array symbol is equal to operator    
-            if(numArr[i] === op[l]){
+            if (numArr[i] === op[l]) {
                 // sets two variable equal to previous and next char
-                let num1 = numArr[i - 1]
-                let num2 = numArr[i + 1]
+                let num1 = numArr[i - 1];
+                let num2 = numArr[i + 1];
 
                 // empty variable for storage
-                let opTemp
+                let opTemp;
 
                 // error handling to avoid 0 division and whatnot.
-                const zOp = ["^","*","/"]
-                if(num1 === "0" && zOp.includes(op[l])) return "0";
+                if (op[l] === "/" && Number(num2) === 0) return "Error";
 
                 // if symbol then math
-                if(op[l] === "^") opTemp = exp(num1, num2)
-                if(op[l] === "*") opTemp = mul(num1, num2)
-                if(op[l] === "/") opTemp = div(num1, num2)
-                if(op[l] === "+") opTemp = add(num1, num2)
-                if(op[l] === "-") opTemp = sub(num1, num2)
+                if(op[l] === "^") opTemp = exp(num1, num2);
+                if(op[l] === "*") opTemp = mul(num1, num2);
+                if(op[l] === "/") opTemp = div(num1, num2);
+                if(op[l] === "+") opTemp = add(num1, num2);
+                if(op[l] === "-") opTemp = sub(num1, num2);
 
                 // this last two lines of code were written by and ai, but to change it, i'd have to make it worse.
                 // it seems like the best possible method.
@@ -191,7 +209,7 @@ function operation(num){
             }
         }
     }
-    return numArr[0];
+    return Number(numArr[0]);
 }
 
 
