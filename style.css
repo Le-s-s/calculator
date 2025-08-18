@@ -3,21 +3,38 @@ body,html{
     margin:0
 }
 
-.display,.container{
+
+.display, .math-container,.math-left,.math-right{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
 }
 
-.display{
+.math-left,.math-right{
+    max-height:28.125em;
+    flex-direction: column;
+}
+
+.display,.math-container{
     flex-direction: row;
 }
 
-.container{
-    width: 450px;
+.display{
+    justify-content: space-around;
+}
+
+.math-container{
+    justify-self:center;
+
+}
+.math-left{
+    max-width: 37.5em;
+}
+
+.math-right{
+    max-width: 37.5em;
 }
 
 button{
-    width: 150px;
-    height: 150px;
+    width:9.375em;
+    height:9.375em
 }
